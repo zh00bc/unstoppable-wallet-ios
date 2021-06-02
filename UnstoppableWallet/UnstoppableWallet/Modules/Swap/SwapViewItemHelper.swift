@@ -3,6 +3,18 @@ import CoinKit
 
 class SwapViewItemHelper {
 
+    func percentage(percentage: Decimal, level: PercentageLevel, minLevel: PercentageLevel = .normal) -> String? {
+        guard level.rawValue >= minLevel.rawValue else {
+            return nil
+        }
+
+        return percentage.description + "%"
+    }
+
+    func coinAmount(amount: Decimal, coin: Coin) -> String {
+        CoinValue(coin: coin, value: amount).formattedString
+    }
+
     func priceValue(executionPrice: Decimal?, coinIn: Coin?, coinOut: Coin?) -> PriceCoinValue? {
         guard let price = executionPrice, let coinOut = coinOut, let coinIn = coinIn else {
             return nil
