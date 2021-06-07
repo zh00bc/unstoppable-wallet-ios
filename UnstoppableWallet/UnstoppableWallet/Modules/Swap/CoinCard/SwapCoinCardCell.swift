@@ -9,7 +9,7 @@ class SwapCoinCardCell: UITableViewCell {
 
     private let disposeBag = DisposeBag()
 
-    private let viewModel: SwapCoinCardViewModel
+    private let viewModel: SwapCoinCardViewModelNew
     weak var presentDelegate: IPresentDelegate?
 
     private let cardView = CardView(insets: .zero)
@@ -24,7 +24,7 @@ class SwapCoinCardCell: UITableViewCell {
 
     private let balanceView = AdditionalDataView()
 
-    init(viewModel: SwapCoinCardViewModel, amountInputViewModel: AmountInputViewModel, title: String) {
+    init(viewModel: SwapCoinCardViewModelNew, amountInputViewModel: AmountInputViewModel, title: String) {
         self.viewModel = viewModel
 
         formAmountInput = FormAmountInputView(viewModel: amountInputViewModel)

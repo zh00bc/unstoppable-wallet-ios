@@ -5,7 +5,7 @@ import CurrencyKit
 import XRatesKit
 
 class CoinSelectService {
-    private let dex: SwapModule.Dex
+    private let dex: SwapModule.DexNew
     private let coinManager: ICoinManager
     private let walletManager: IWalletManager
     private let adapterManager: IAdapterManager
@@ -16,7 +16,7 @@ class CoinSelectService {
 
     private(set) var items = [Item]()
 
-    init(dex: SwapModule.Dex, coinManager: ICoinManager, walletManager: IWalletManager, adapterManager: IAdapterManager, rateManager: IRateManager, currencyKit: CurrencyKit.Kit) {
+    init(dex: SwapModule.DexNew, coinManager: ICoinManager, walletManager: IWalletManager, adapterManager: IAdapterManager, rateManager: IRateManager, currencyKit: CurrencyKit.Kit) {
         self.dex = dex
         self.coinManager = coinManager
         self.walletManager = walletManager
@@ -29,8 +29,8 @@ class CoinSelectService {
 
     private func dexSupports(coin: Coin) -> Bool {
         switch coin.type {
-        case .ethereum, .erc20: return dex == .uniswap
-        case .binanceSmartChain, .bep20: return dex == .pancake
+        case .ethereum, .erc20: return dex.blockchain == .ethereum
+        case .binanceSmartChain, .bep20: return dex.blockchain == .binanceSmartChain
         default: return false
         }
     }

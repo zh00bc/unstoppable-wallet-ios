@@ -6,9 +6,9 @@ import CoinKit
 
 class SwapServiceNew {
     private let disposeBag = DisposeBag()
+    private var swapAdapterDisposeBag = DisposeBag()
 
-    let dex: SwapModule.Dex
-    private let swapAdapter: ISwapAdapter
+    private let swapAdapterManager: SwapAdapterManager
     private let allowanceService: SwapAllowanceService
     private let pendingAllowanceService: SwapPendingAllowanceService
     private let adapterManager: IAdapterManager
@@ -42,23 +42,28 @@ class SwapServiceNew {
     private let balanceToRelay = PublishRelay<Decimal?>()
 
     var approveData: SwapAllowanceService.ApproveData? {
-        balanceFrom.flatMap { allowanceService.approveData(dex: dex, amount: $0) }
+        balanceFrom.flatMap { allowanceService.approveData(amount: $0) }
     }
 
-    init(dex: SwapModule.Dex, swapProvider: ISwapAdapter, allowanceService: SwapAllowanceService, pendingAllowanceService: SwapPendingAllowanceService, adapterManager: IAdapterManager) {
-        self.dex = dex
-        self.swapAdapter = swapProvider
+    init(swapAdapterManager: SwapAdapterManager, allowanceService: SwapAllowanceService, pendingAllowanceService: SwapPendingAllowanceService, adapterManager: IAdapterManager) {
+        self.swapAdapterManager = swapAdapterManager
         self.allowanceService = allowanceService
         self.pendingAllowanceService = pendingAllowanceService
         self.adapterManager = adapterManager
 
-        subscribe(disposeBag, swapProvider.stateObservable) { [weak self] _ in self?.syncState() }
-        subscribe(disposeBag, swapProvider.fromCoinObservable) { [weak self] coin in self?.sync(coinFrom: coin) }
-        subscribe(disposeBag, swapProvider.toCoinObservable) { [weak self] coin in self?.sync(coinTo: coin) }
-        subscribe(disposeBag, swapProvider.fromAmountObservable) { [weak self] _ in self?.syncState() }
-        subscribe(disposeBag, swapProvider.toAmountObservable) { [weak self] _ in self?.syncState() }
+        subscribeToSwapAdapter()
         subscribe(disposeBag, allowanceService.stateObservable) { [weak self] _ in self?.syncState() }
         subscribe(disposeBag, pendingAllowanceService.isPendingObservable) { [weak self] _ in self?.syncState() }
+    }
+
+    private func subscribeToSwapAdapter() {
+        swapAdapterDisposeBag = DisposeBag()
+
+        subscribe(swapAdapterDisposeBag, swapAdapterManager.swapAdapter.stateObservable) { [weak self] _ in self?.syncState() }
+        subscribe(swapAdapterDisposeBag, swapAdapterManager.swapAdapter.fromCoinObservable) { [weak self] coin in self?.sync(coinFrom: coin) }
+        subscribe(swapAdapterDisposeBag, swapAdapterManager.swapAdapter.toCoinObservable) { [weak self] coin in self?.sync(coinTo: coin) }
+        subscribe(swapAdapterDisposeBag, swapAdapterManager.swapAdapter.fromAmountObservable) { [weak self] _ in self?.syncState() }
+        subscribe(swapAdapterDisposeBag, swapAdapterManager.swapAdapter.toAmountObservable) { [weak self] _ in self?.syncState() }
     }
 
     private func sync(coinFrom: Coin?) {
@@ -76,7 +81,7 @@ class SwapServiceNew {
         var loading = false
         var transactionData: TransactionData? = nil
 
-        switch swapAdapter.state {
+        switch swapAdapterManager.swapAdapter.state {
         case .loading: loading = true
         case let .ready(trade: _, data: data): transactionData = data
         case let .notReady(errors: errors):
@@ -86,7 +91,7 @@ class SwapServiceNew {
         switch allowanceService.state {
         case .loading: loading = true
         case let .ready(allowance: allowance):
-            if let fromAmount = swapAdapter.fromAmount, fromAmount > allowance.value {
+            if let fromAmount = swapAdapterManager.swapAdapter.fromAmount, fromAmount > allowance.value {
                 allErrors.append(SwapError.insufficientAllowance)
             }
         case let .notReady(error: error):
@@ -94,7 +99,7 @@ class SwapServiceNew {
         default: ()
         }
 
-        if let fromAmount = swapAdapter.fromAmount {
+        if let fromAmount = swapAdapterManager.swapAdapter.fromAmount {
             if balanceFrom == nil || (balanceFrom ?? 0) < fromAmount {
                 allErrors.append(SwapError.insufficientBalanceFrom)
             }

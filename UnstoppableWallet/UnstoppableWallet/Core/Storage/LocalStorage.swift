@@ -22,6 +22,7 @@ class LocalStorage {
     private let keyPushNotificationsOn = "push_notifications_on"
     private let keyDefaultMarketCategory = "default_market_category"
     private let keyZCashRewind = "z_cash_always_pending_rewind"
+    private let keyDefaultProvider = "swap_provider"
 
     private let storage: StorageKit.ILocalStorage
 
@@ -139,6 +140,15 @@ extension LocalStorage: ILocalStorage {
     var zcashAlwaysPendingRewind: Bool {
         get { storage.value(for: keyZCashRewind) ?? false }
         set { storage.set(value: newValue, for: keyZCashRewind) }
+    }
+
+    func defaultProvider(blockchain: SwapModule.DexNew.Blockchain) -> SwapModule.DexNew.Provider {
+        let raw: String? = storage.value(for: keyDefaultProvider + blockchain.rawValue)
+        return (raw.flatMap { SwapModule.DexNew.Provider(rawValue: $0) }) ?? blockchain.allowedProviders[0]
+    }
+
+    func setDefaultProvider(blockchain: SwapModule.DexNew.Blockchain, provider: SwapModule.DexNew.Provider) {
+        storage.set(value: provider.rawValue, for: keyDefaultProvider + blockchain.rawValue)
     }
 
 }

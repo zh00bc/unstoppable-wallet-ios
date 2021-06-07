@@ -33,6 +33,9 @@ protocol ILocalStorage: AnyObject {
     var pushNotificationsOn: Bool { get set }
     var marketCategory: Int? { get set }
     var zcashAlwaysPendingRewind: Bool { get set }
+
+    func defaultProvider(blockchain: SwapModule.DexNew.Blockchain) -> SwapModule.DexNew.Provider
+    func setDefaultProvider(blockchain: SwapModule.DexNew.Blockchain, provider: SwapModule.DexNew.Provider)
 }
 
 protocol ILogRecordManager {
@@ -152,7 +155,7 @@ protocol ISendEthereumAdapter {
     func transactionData(amount: BigUInt, address: EthereumKit.Address) -> TransactionData
 }
 
-protocol IErc20Adapter {
+protocol IEip20Adapter {
     var pendingTransactions: [TransactionRecord] { get }
     func allowanceSingle(spenderAddress: EthereumKit.Address, defaultBlockParameter: DefaultBlockParameter) -> Single<Decimal>
 }

@@ -1,37 +1,39 @@
 import RxSwift
 import RxCocoa
 
-protocol IRecipientAddressService {
-    var initialAddress: Address? { get }
-    var error: Error? { get }
-    var errorObservable: Observable<Error?> { get }
-    func set(address: Address?)
-    func set(amount: Decimal)
-}
-
-class RecipientAddressViewModel {
-    private let service: IRecipientAddressService
+class SwapAddressSettingsViewModel {
     private let resolutionService: AddressResolutionService
     private let addressParser: IAddressParser
     private let disposeBag = DisposeBag()
 
+    let id: String
+    let placeholder: String?
+    let initialAddress: Address?
+
+    var header: String?
+    var footer: String?
+
+    var onAddressChanged: ((Address?) -> ())?
+    var onAmountChanged: ((Decimal?) -> ())?
+
     private let cautionRelay = BehaviorRelay<Caution?>(value: nil)
+    var caution: Caution? {
+        didSet {
+            cautionRelay.accept(caution)
+        }
+    }
+
     private let setTextRelay = PublishRelay<String?>()
 
     private var editing = false
     private var forceShowError = false
 
-    init(service: IRecipientAddressService, resolutionService: AddressResolutionService, addressParser: IAddressParser) {
-        self.service = service
+    init(resolutionService: AddressResolutionService, addressParser: IAddressParser, id: String, placeholder: String?, initialAddress: Address?) {
         self.resolutionService = resolutionService
         self.addressParser = addressParser
-
-        service.errorObservable
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .userInitiated))
-                .subscribe(onNext: { [weak self] _ in
-                    self?.sync()
-                })
-                .disposed(by: disposeBag)
+        self.id = id
+        self.placeholder = placeholder
+        self.initialAddress = initialAddress
 
         resolutionService.resolveFinishedObservable
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .userInitiated))
@@ -39,7 +41,7 @@ class RecipientAddressViewModel {
                     self?.forceShowError = true
 
                     if let address = address {
-                        self?.service.set(address: address)
+                        self?.onAddressChanged?(address)
                     } else {
                         self?.sync()
                     }
@@ -53,17 +55,13 @@ class RecipientAddressViewModel {
         if (editing && !forceShowError) || resolutionService.isResolving {
             cautionRelay.accept(nil)
         } else {
-            cautionRelay.accept(service.error.map { Caution(text: $0.smartDescription, type: .error) })
+            cautionRelay.accept(caution)
         }
     }
 
 }
 
-extension RecipientAddressViewModel { //: ISwapAddressSettingsViewModel {
-
-    var initialValue: String? {
-        service.initialAddress?.title
-    }
+extension SwapAddressSettingsViewModel: ISwapAddressSettingsViewModel {
 
     var isLoadingDriver: Driver<Bool> {
         resolutionService.isResolvingObservable.asDriver(onErrorJustReturn: false)
@@ -80,7 +78,7 @@ extension RecipientAddressViewModel { //: ISwapAddressSettingsViewModel {
     func onChange(text: String?) {
         forceShowError = false
 
-        service.set(address: text.map { Address(raw: $0) })
+        onAddressChanged?(text.map { Address(raw: $0) })
         resolutionService.set(text: text)
     }
 
@@ -95,7 +93,7 @@ extension RecipientAddressViewModel { //: ISwapAddressSettingsViewModel {
         onChange(text: addressData.address)
 
         if let amount = addressData.amount {
-            service.set(amount: Decimal(amount))
+            onAmountChanged?(Decimal(amount))
         }
     }
 

@@ -5,6 +5,10 @@ import RxSwift
 import CoinKit
 
 protocol ISwapAdapter: AnyObject {
+    var swapSettingsAdapter: ISwapSettingsAdapter { get }
+
+    var routerAddress: EthereumKit.Address { get }
+
     var state: SwapAdapterState { get }
     var stateObservable: Observable<SwapAdapterState> { get }
 
@@ -70,4 +74,20 @@ enum SwapError: Error {
     case invalidToken
     case editToAmountDisabled
     case noTradeData
+}
+
+protocol ISwapSettingsAdapter {
+    var settingsItems: [ISwapSettingsViewModel] { get }
+    var settingsItemsObservable: Observable<[ISwapSettingsViewModel]> { get }
+
+//    var errors: [Error] { get }
+//    var errorsObservable: Observable<[Error]> { get }
+
+    var state: SwapSettingsState { get }
+    var stateObservable: Observable<SwapSettingsState> { get }
+}
+
+enum SwapSettingsState {
+    case valid
+    case invalid(cause: String?)
 }

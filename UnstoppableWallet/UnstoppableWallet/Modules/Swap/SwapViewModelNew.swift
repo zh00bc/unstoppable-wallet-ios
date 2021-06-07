@@ -7,10 +7,11 @@ import EthereumKit
 
 class SwapViewModelNew {
     private let disposeBag = DisposeBag()
+    private var swapAdapterDisposeBag = DisposeBag()
 
     public let service: SwapServiceNew
     public let switchService: AmountTypeSwitchService
-    public let swapAdapter: ISwapAdapter
+    public let swapAdapterManager: SwapAdapterManager
     private let pendingAllowanceService: SwapPendingAllowanceService
 
     private let viewItemHelper: SwapViewItemHelper
@@ -28,26 +29,33 @@ class SwapViewModelNew {
 
     private let scheduler = SerialDispatchQueueScheduler(qos: .userInitiated, internalSerialQueueName: "io.horizontalsystems.unstoppable.swap_view_model")
 
-    init(service: SwapServiceNew, switchService: AmountTypeSwitchService, swapAdapter: ISwapAdapter, pendingAllowanceService: SwapPendingAllowanceService, viewItemHelper: SwapViewItemHelper) {
+    init(service: SwapServiceNew, switchService: AmountTypeSwitchService, swapAdapterManager: SwapAdapterManager, pendingAllowanceService: SwapPendingAllowanceService, viewItemHelper: SwapViewItemHelper) {
         self.service = service
         self.switchService = switchService
-        self.swapAdapter = swapAdapter
+        self.swapAdapterManager = swapAdapterManager
         self.pendingAllowanceService = pendingAllowanceService
         self.viewItemHelper = viewItemHelper
 
-        subscribeToService()
+        subscribeToServices()
 
         sync(state: service.state)
         sync(errors: service.errors)
-        sync(adapterState: swapAdapter.state)
+        sync(adapterState: swapAdapterManager.swapAdapter.state)
     }
 
-    private func subscribeToService() {
+    private func subscribeToServices() {
         subscribe(scheduler, disposeBag, service.stateObservable) { [weak self] in self?.sync(state: $0) }
         subscribe(scheduler, disposeBag, service.errorsObservable) { [weak self] in self?.sync(errors: $0) }
-        subscribe(scheduler, disposeBag, swapAdapter.stateObservable) { [weak self] in self?.sync(adapterState: $0) }
 //        subscribe(scheduler, disposeBag, swapAdapter.swapTradeOptionsObservable) { [weak self] in self?.sync(swapTradeOptions: $0) }
         subscribe(scheduler, disposeBag, pendingAllowanceService.isPendingObservable) { [weak self] in self?.sync(isApprovePending: $0) }
+
+        subscribe(scheduler, disposeBag, swapAdapterManager.onUpdateProviderObservable) { [weak self] _ in self?.subscribeSwapAdapter() }
+        subscribeSwapAdapter()
+    }
+
+    private func subscribeSwapAdapter() {
+        swapAdapterDisposeBag = DisposeBag()
+        subscribe(scheduler, swapAdapterDisposeBag, swapAdapterManager.swapAdapter.stateObservable) { [weak self] in self?.sync(adapterState: $0) }
     }
 
     private func sync(state: SwapServiceNew.State? = nil) {
@@ -101,7 +109,7 @@ class SwapViewModelNew {
     private func syncProceedAction() {
         if case .ready = service.state {
             proceedActionRelay.accept(.enabled(title: "swap.proceed_button".localized))
-        } else if case .ready = swapAdapter.state {
+        } else if case .ready = swapAdapterManager.swapAdapter.state {
             if service.errors.contains(where: { .insufficientBalanceIn == $0 as? SwapService.SwapError }) {
                 proceedActionRelay.accept(.disabled(title: "swap.button_error.insufficient_balance".localized))
             } else if service.errors.contains(where: { .forbiddenPriceImpactLevel == $0 as? SwapService.SwapError }) {
@@ -117,7 +125,7 @@ class SwapViewModelNew {
     }
 
     private func syncApproveAction() {
-        if case .ready = swapAdapter.state {
+        if case .ready = swapAdapterManager.swapAdapter.state {
             if service.errors.contains(where: { .insufficientBalanceIn == $0 as? SwapService.SwapError || .forbiddenPriceImpactLevel == $0 as? SwapService.SwapError }) {
                 approveActionRelay.accept(.hidden)
             } else if pendingAllowanceService.isPending == true {
@@ -198,7 +206,7 @@ extension SwapViewModelNew {
     }
 
     func onTapSwitch() {
-        swapAdapter.switchCoins()
+        swapAdapterManager.swapAdapter.switchCoins()
     }
 
     func onTapApprove() {

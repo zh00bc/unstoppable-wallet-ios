@@ -5,7 +5,7 @@ import RxCocoa
 class SwapAllowanceViewModel {
     private let disposeBag = DisposeBag()
 
-    private let service: SwapService
+    private let service: SwapServiceNew
     private let allowanceService: SwapAllowanceService
     private let pendingAllowanceService: SwapPendingAllowanceService
 
@@ -18,7 +18,7 @@ class SwapAllowanceViewModel {
     private var allowanceRelay = BehaviorRelay<String?>(value: nil)
     private var isErrorRelay = BehaviorRelay<Bool>(value: false)
 
-    init(service: SwapService, allowanceService: SwapAllowanceService, pendingAllowanceService: SwapPendingAllowanceService) {
+    init(service: SwapServiceNew, allowanceService: SwapAllowanceService, pendingAllowanceService: SwapPendingAllowanceService) {
         self.service = service
         self.allowanceService = allowanceService
         self.pendingAllowanceService = pendingAllowanceService

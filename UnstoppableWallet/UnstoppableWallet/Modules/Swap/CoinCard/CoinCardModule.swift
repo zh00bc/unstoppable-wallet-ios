@@ -16,6 +16,21 @@ protocol ISwapCoinCardService: AnyObject {
     func onChange(coin: Coin)
 }
 
+protocol ISwapCoinCardServiceNew: AnyObject {
+    var dex: SwapModule.DexNew { get }
+    var isEstimated: Bool { get }
+    var coin: Coin? { get }
+    var balance: Decimal? { get }
+
+    var updateSubscriptions: Observable<()> { get }
+    var isEstimatedObservable: Observable<Bool> { get }
+    var coinObservable: Observable<Coin?> { get }
+    var balanceObservable: Observable<Decimal?> { get }
+    var errorObservable: Observable<Error?> { get }
+
+    func onChange(coin: Coin)
+}
+
 struct CoinCardModule {
 
     static func fromCell(service: SwapService, tradeService: SwapTradeService, switchService: AmountTypeSwitchService) -> SwapCoinCardCell {
@@ -32,7 +47,8 @@ struct CoinCardModule {
                 switchService: switchService,
                 decimalParser: AmountDecimalParser()
         )
-        return SwapCoinCardCell(viewModel: viewModel, amountInputViewModel: amountInputViewModel, title: "swap.you_pay".localized)
+        fatalError()
+//        return SwapCoinCardCell(viewModel: viewModel, amountInputViewModel: amountInputViewModel, title: "swap.you_pay".localized)
     }
 
     static func toCell(service: SwapService, tradeService: SwapTradeService, switchService: AmountTypeSwitchService) -> SwapCoinCardCell {
@@ -50,7 +66,8 @@ struct CoinCardModule {
                 decimalParser: AmountDecimalParser(),
                 isMaxSupported: false
         )
-        return SwapCoinCardCell(viewModel: viewModel, amountInputViewModel: amountInputViewModel, title: "swap.you_get".localized)
+        fatalError()
+//        return SwapCoinCardCell(viewModel: viewModel, amountInputViewModel: amountInputViewModel, title: "swap.you_get".localized)
     }
 
 }

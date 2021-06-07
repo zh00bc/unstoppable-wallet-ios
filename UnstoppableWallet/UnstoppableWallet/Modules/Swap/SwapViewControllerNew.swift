@@ -40,8 +40,8 @@ class SwapViewControllerNew: ThemeViewController {
     init(viewModel: SwapViewModelNew, allowanceViewModel: SwapAllowanceViewModel) {
         self.viewModel = viewModel
 
-        fromCoinCardCell = CoinCardModuleNew.fromCell(service: viewModel.service, swapAdapter: viewModel.swapAdapter, switchService: viewModel.switchService)
-        toCoinCardCell = CoinCardModuleNew.toCell(service: viewModel.service, swapAdapter: viewModel.swapAdapter, switchService: viewModel.switchService)
+        fromCoinCardCell = CoinCardModuleNew.fromCell(service: viewModel.service, swapAdapterManager: viewModel.swapAdapterManager, switchService: viewModel.switchService)
+        toCoinCardCell = CoinCardModuleNew.toCell(service: viewModel.service, swapAdapterManager: viewModel.swapAdapterManager, switchService: viewModel.switchService)
         allowanceCell = SwapAllowanceCell(viewModel: allowanceViewModel)
 
         super.init()
@@ -131,7 +131,7 @@ class SwapViewControllerNew: ThemeViewController {
     }
 
     @objc func onInfo() {
-        let module = InfoModule.viewController(dataSource: DexInfoDataSource(dex: viewModel.service.dex))
+        let module = InfoModule.viewController(dataSource: DexInfoDataSource(dex: viewModel.swapAdapterManager.dex))
         present(ThemeNavigationController(rootViewController: module), animated: true)
     }
 
@@ -237,11 +237,11 @@ class SwapViewControllerNew: ThemeViewController {
     }
 
     @objc func onTapAdvancedSettings() {
-//        guard let viewController = SwapTradeOptionsModule.viewController(tradeService: viewModel.tradeService) else {
-//            return
-//        }
-//
-//        present(viewController, animated: true)
+        guard let viewController = SwapSettingsModule.viewController(swapSettingAdapter: viewModel.swapAdapterManager.swapSettingsAdapter) else {
+            return
+        }
+
+        present(viewController, animated: true)
     }
 
     private func openApprove(approveData: SwapAllowanceService.ApproveData) {
@@ -253,7 +253,7 @@ class SwapViewControllerNew: ThemeViewController {
     }
 
     private func openConfirm(sendData: SendEvmData) {
-        guard let viewController = SwapConfirmationModule.viewController(sendData: sendData, dex: viewModel.service.dex) else {
+        guard let viewController = SwapConfirmationModule.viewController(sendData: sendData, dex: viewModel.swapAdapterManager.dex) else {
             return
         }
 

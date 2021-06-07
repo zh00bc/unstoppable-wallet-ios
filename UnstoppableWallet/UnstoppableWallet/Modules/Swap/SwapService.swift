@@ -192,7 +192,7 @@ extension SwapService {
             return nil
         }
 
-        return allowanceService.approveData(dex: dex, amount: amount)
+        return allowanceService.approveData(amount: amount)
     }
 
 }

@@ -123,7 +123,7 @@ extension Evm20Adapter: ISendEthereumAdapter {
 
 }
 
-extension Evm20Adapter: IErc20Adapter {
+extension Evm20Adapter: IEip20Adapter {
 
     var pendingTransactions: [TransactionRecord] {
         evm20Kit.pendingTransactions().map { transactionRecord(fromTransaction: $0) }

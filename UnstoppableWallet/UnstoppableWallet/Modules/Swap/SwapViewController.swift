@@ -131,7 +131,7 @@ class SwapViewController: ThemeViewController {
     }
 
     @objc func onInfo() {
-        let module = InfoModule.viewController(dataSource: DexInfoDataSource(dex: viewModel.service.dex))
+        let module = InfoModule.viewController(dataSource: DexInfoDataSource(dex: SwapModule.DexNew(blockchain: .binanceSmartChain, provider: .oneInch)))
         present(ThemeNavigationController(rootViewController: module), animated: true)
     }
 
@@ -253,7 +253,7 @@ class SwapViewController: ThemeViewController {
     }
 
     private func openConfirm(sendData: SendEvmData) {
-        guard let viewController = SwapConfirmationModule.viewController(sendData: sendData, dex: viewModel.service.dex) else {
+        guard let viewController = SwapConfirmationModule.viewController(sendData: sendData, dex: SwapModule.DexNew(blockchain: .binanceSmartChain, provider: .oneInch)) else {
             return
         }
 

@@ -5,12 +5,13 @@ import RxRelay
 import CoinKit
 
 class SwapAllowanceService {
-    private let spenderAddress: EthereumKit.Address
+    private let swapAdapterManager: SwapAdapterManager
     private let adapterManager: IAdapterManager
 
     private var coin: Coin?
 
     private let disposeBag = DisposeBag()
+    private var lastBlockDisposeBag = DisposeBag()
     private var allowanceDisposeBag = DisposeBag()
 
     private let stateRelay = PublishRelay<State?>()
@@ -22,22 +23,27 @@ class SwapAllowanceService {
         }
     }
 
-    init(spenderAddress: EthereumKit.Address, adapterManager: IAdapterManager, evmKit: EthereumKit.Kit) {
-        self.spenderAddress = spenderAddress
+    init(swapAdapterManager: SwapAdapterManager, adapterManager: IAdapterManager) {
+        self.swapAdapterManager = swapAdapterManager
         self.adapterManager = adapterManager
 
-        evmKit.lastBlockHeightObservable
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .userInitiated))
-                .subscribe(onNext: { [weak self] blockNumber in
-                    self?.sync()
-                })
-                .disposed(by: disposeBag)
+        subscribe(disposeBag, swapAdapterManager.onUpdateProviderObservable) { [weak self] _ in self?.subscribeEvmKit() }
+        subscribeEvmKit()
+    }
+
+    private func subscribeEvmKit() {
+        lastBlockDisposeBag = DisposeBag()
+
+        swapAdapterManager.dex.evmKit.map { subscribe(ConcurrentDispatchQueueScheduler(qos: .userInitiated), lastBlockDisposeBag, $0.lastBlockHeightObservable) { [weak self] _ in
+                self?.sync()
+            }
+        }
     }
 
     private func sync() {
         allowanceDisposeBag = DisposeBag()
 
-        guard let coin = coin, let adapter = adapterManager.adapter(for: coin) as? IErc20Adapter else {
+        guard let coin = coin, let adapter = adapterManager.adapter(for: coin) as? IEip20Adapter else {
             state = nil
             return
         }
@@ -49,7 +55,7 @@ class SwapAllowanceService {
         }
 
         adapter
-                .allowanceSingle(spenderAddress: spenderAddress, defaultBlockParameter: .latest)
+                .allowanceSingle(spenderAddress: swapAdapterManager.routerAddress, defaultBlockParameter: .latest)
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .userInitiated))
                 .subscribe(onSuccess: { [weak self] allowance in
                     self?.state = .ready(allowance: CoinValue(coin: coin, value: allowance))
@@ -72,7 +78,7 @@ extension SwapAllowanceService {
         sync()
     }
 
-    func approveData(dex: SwapModule.Dex, amount: Decimal) -> ApproveData? {
+    func approveData(amount: Decimal) -> ApproveData? {
         guard case .ready(let allowance) = state else {
             return nil
         }
@@ -82,9 +88,9 @@ extension SwapAllowanceService {
         }
 
         return ApproveData(
-                dex: dex,
+                dex: swapAdapterManager.dex,
                 coin: coin,
-                spenderAddress: spenderAddress,
+                spenderAddress: swapAdapterManager.routerAddress,
                 amount: amount,
                 allowance: allowance.value
         )
@@ -109,7 +115,7 @@ extension SwapAllowanceService {
     }
 
     struct ApproveData {
-        let dex: SwapModule.Dex
+        let dex: SwapModule.DexNew
         let coin: Coin
         let spenderAddress: EthereumKit.Address
         let amount: Decimal

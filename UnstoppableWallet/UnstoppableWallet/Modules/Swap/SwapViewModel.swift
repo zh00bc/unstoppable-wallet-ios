@@ -192,6 +192,7 @@ extension SwapViewModel {
         switch service.dex {
         case .uniswap: return "Uniswap"
         case .pancake: return "PancakeSwap"
+        case .oneInchBsc, .oneInchEth: return "PancakeSwap"
         }
     }
 

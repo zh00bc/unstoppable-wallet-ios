@@ -5,7 +5,6 @@ import RxRelay
 import CoinKit
 
 class SwapPendingAllowanceService {
-    private let spenderAddress: EthereumKit.Address
     private let adapterManager: IAdapterManager
     private let allowanceService: SwapAllowanceService
 
@@ -23,8 +22,7 @@ class SwapPendingAllowanceService {
         }
     }
 
-    init(spenderAddress: EthereumKit.Address, adapterManager: IAdapterManager, allowanceService: SwapAllowanceService) {
-        self.spenderAddress = spenderAddress
+    init(adapterManager: IAdapterManager, allowanceService: SwapAllowanceService) {
         self.adapterManager = adapterManager
         self.allowanceService = allowanceService
 
@@ -66,7 +64,7 @@ extension SwapPendingAllowanceService {
     }
 
     func syncAllowance() {
-        guard let coin = coin, let adapter = adapterManager.adapter(for: coin) as? IErc20Adapter else {
+        guard let coin = coin, let adapter = adapterManager.adapter(for: coin) as? IEip20Adapter else {
             return
         }
 

@@ -5,7 +5,7 @@ import RxSwift
 import RxRelay
 import CoinKit
 
-class UniswapService {
+class UniswapAdapter {
     private static let warningPriceImpact: Decimal = 1
     private static let forbiddenPriceImpact: Decimal = 5
     private var swapDataDisposeBag = DisposeBag()
@@ -19,6 +19,14 @@ class UniswapService {
         }
     }
     private let stateRelay = PublishRelay<SwapAdapterState>()
+
+    private let swapTradeOptionsRelay = PublishRelay<SwapTradeOptions>()
+    private var swapTradeOptions = SwapTradeOptions() {
+        didSet {
+            swapTradeOptionsRelay.accept(swapTradeOptions)
+            syncTradeData()
+        }
+    }
 
     private(set) var fromCoin: Coin? {
         didSet {
@@ -218,7 +226,23 @@ class UniswapService {
 
 }
 
-extension UniswapService: ISwapAdapter {
+extension UniswapAdapter: ISwapAdapter {
+
+    var routerAddress: EthereumKit.Address {
+        uniswapKit.routerAddress
+    }
+
+    var swapSettingsAdapter: ISwapSettingsAdapter {
+        guard let ethereumCoin = App.shared.coinKit.coin(type: .ethereum) else {
+            fatalError()
+        }
+        return UniswapSettingsAdapter(
+                resolutionService: AddressResolutionService(coinCode: ethereumCoin.code),
+                addressParser: AddressParserFactory().parser(coin: ethereumCoin),
+                decimalParser: AmountDecimalParser(),
+                tradeOptions: swapTradeOptions
+        )
+    }
 
     var stateObservable: Observable<SwapAdapterState> {
         stateRelay.asObservable()

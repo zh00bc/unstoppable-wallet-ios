@@ -65,12 +65,18 @@ class ShortcutInputCell: UITableViewCell {
 extension ShortcutInputCell {
 
     var inputPlaceholder: String? {
-        get { inputStackView.placeholder }
-        set { inputStackView.placeholder = newValue }
+        get {
+            inputStackView.placeholder
+        }
+        set {
+            inputStackView.placeholder = newValue
+        }
     }
 
     var inputText: String? {
-        get { inputStackView.text }
+        get {
+            inputStackView.text
+        }
         set {
             inputStackView.text = newValue
             syncButtonStates()
@@ -78,18 +84,30 @@ extension ShortcutInputCell {
     }
 
     var isEditable: Bool {
-        get { inputStackView.isUserInteractionEnabled }
-        set { inputStackView.isUserInteractionEnabled = newValue }
+        get {
+            inputStackView.isUserInteractionEnabled
+        }
+        set {
+            inputStackView.isUserInteractionEnabled = newValue
+        }
     }
 
     var maximumNumberOfLines: Int {
-        get { inputStackView.maximumNumberOfLines }
-        set { inputStackView.maximumNumberOfLines = newValue }
+        get {
+            inputStackView.maximumNumberOfLines
+        }
+        set {
+            inputStackView.maximumNumberOfLines = newValue
+        }
     }
 
     var keyboardType: UIKeyboardType {
-        get { inputStackView.keyboardType }
-        set { inputStackView.keyboardType = newValue }
+        get {
+            inputStackView.keyboardType
+        }
+        set {
+            inputStackView.keyboardType = newValue
+        }
     }
 
     func set(cautionType: CautionType?) {
@@ -115,13 +133,21 @@ extension ShortcutInputCell {
     }
 
     var onChangeHeight: (() -> ())? {
-        get { formValidatedView.onChangeHeight }
-        set { formValidatedView.onChangeHeight = newValue }
+        get {
+            formValidatedView.onChangeHeight
+        }
+        set {
+            formValidatedView.onChangeHeight = newValue
+        }
     }
 
     var isValidText: ((String) -> Bool)? {
-        get { inputStackView.isValidText }
-        set { inputStackView.isValidText = newValue }
+        get {
+            inputStackView.isValidText
+        }
+        set {
+            inputStackView.isValidText = newValue
+        }
     }
 
     func height(containerWidth: CGFloat) -> CGFloat {
@@ -133,4 +159,13 @@ extension ShortcutInputCell {
 struct InputShortcut {
     let title: String
     let value: String
+}
+
+protocol ISwapSettingsCell: UITableViewCell {
+    var id: String { get }
+
+    var header: String? { get }
+    var footer: String? { get }
+
+    func height(containerWidth: CGFloat) -> CGFloat
 }
