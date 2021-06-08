@@ -1810,6 +1810,7 @@
 		58AAA2B47548D5655651FF8D /* DoubleSpendInfoPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAABC875624B234499359D /* DoubleSpendInfoPresenter.swift */; };
 		58AAA2D9A7CB1B049F5FC620 /* SendAmountModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA82DAFCCEBBC7BEBB80B /* SendAmountModule.swift */; };
 		58AAA2DE815CD7F4BE81013F /* CoinSelectModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAACD2595FD785AEF3C379 /* CoinSelectModule.swift */; };
+		58AAA2E9FA71ACC621330AB6 /* SwapAdapterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA5791EA3178C30AFE2A6 /* SwapAdapterFactory.swift */; };
 		58AAA2EBAFC1C443C48BA857 /* CoinChartFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA55A4A6A97C25F84034F /* CoinChartFactory.swift */; };
 		58AAA306907D58F02F4E7E56 /* MarketDiscoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA127423BB5B5103CB0EE /* MarketDiscoveryService.swift */; };
 		58AAA30B8879F636C2AFFF63 /* CoinFavoriteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAA620CC034917A463F9C /* CoinFavoriteViewModel.swift */; };
@@ -1828,6 +1829,7 @@
 		58AAA38CFBCC6D377BDE404E /* SendConfirmationModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA0C4B0224DD8A8A57AD9 /* SendConfirmationModule.swift */; };
 		58AAA3930956FAC9C67F6E85 /* CoinPageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA473CE62597EBC49DBB6 /* CoinPageService.swift */; };
 		58AAA393DF93EFFA5047589B /* FeeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA24B6EB7103CB072A53D /* FeeSlider.swift */; };
+		58AAA397B15CCAD68D5077D4 /* SwapSettingsViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA688756D86329C19C826 /* SwapSettingsViewModelFactory.swift */; };
 		58AAA39A293C9EBC7583ED63 /* MarketDiscoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA127423BB5B5103CB0EE /* MarketDiscoveryService.swift */; };
 		58AAA39A983D2E97066C3959 /* LastBlockInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA9D55F97CE089EC67766 /* LastBlockInfo.swift */; };
 		58AAA3A5967BAB513DD4B33F /* FeeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA24B6EB7103CB072A53D /* FeeSlider.swift */; };
@@ -1914,6 +1916,7 @@
 		58AAA592A5066885027B4B4D /* ChartIntervalAndSelectedRateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAE79C0AE58E9AACE8791 /* ChartIntervalAndSelectedRateCell.swift */; };
 		58AAA59DF74C10DDCA79F35F /* AdditionalDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA9E19A578FD13792D2B7 /* AdditionalDataView.swift */; };
 		58AAA59E29F23D2F9EC625B8 /* UniswapProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAC01A1CB85BAC663F222 /* UniswapProvider.swift */; };
+		58AAA5CC9D3EC9B51B3A88FF /* SwapAdapterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA5791EA3178C30AFE2A6 /* SwapAdapterFactory.swift */; };
 		58AAA5D4A3825BA722BBFCCE /* RecipientAddressInputCellNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAFD3A0383E3BBBCD01EE /* RecipientAddressInputCellNew.swift */; };
 		58AAA5E6826196EFBEBAE765 /* MarketMetricLargeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA8895A76AF3EA5361D6B /* MarketMetricLargeView.swift */; };
 		58AAA5FDC26FC291E9E82928 /* ChartTypeIntervalConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA8CCC7252ECFFDC51578 /* ChartTypeIntervalConverter.swift */; };
@@ -1934,6 +1937,7 @@
 		58AAA67737676B304B9587E4 /* CoinIdMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA4C71C2C4021826B3D62 /* CoinIdMigration.swift */; };
 		58AAA681397DE9830D350E02 /* SwapViewControllerNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAFF7ED0B33B7787967EF /* SwapViewControllerNew.swift */; };
 		58AAA681DBD060BC84D56CD9 /* SendAmountModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA82DAFCCEBBC7BEBB80B /* SendAmountModule.swift */; };
+		58AAA683FEBD11293ABF9367 /* SwapSettingsAdapterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAD4CED03B35E4B1812F8 /* SwapSettingsAdapterFactory.swift */; };
 		58AAA691DC0544582BABF263 /* CoinChartService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA13C7C5B258310BA61AF /* CoinChartService.swift */; };
 		58AAA6941C8B5140B0B5DDAE /* Evm20Adapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA312DD0792117182B64E /* Evm20Adapter.swift */; };
 		58AAA6982091BC34E65C50CF /* AmountInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAF4E453A954DBFA84E89 /* AmountInfoView.swift */; };
@@ -1953,6 +1957,7 @@
 		58AAA6FD1BB4BBD2D671314B /* MarketAdvancedSearchResultModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA31791EC76F7F295C338 /* MarketAdvancedSearchResultModule.swift */; };
 		58AAA6FD8C7EE715B791F566 /* SendFeeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA6205C47965E48E4BAC3 /* SendFeeView.swift */; };
 		58AAA700DF3918486250D7B0 /* MetricChartCurrentInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA99102ABF17C356AA280 /* MetricChartCurrentInfoCell.swift */; };
+		58AAA70D01856796BB296708 /* SwapSettingsViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA688756D86329C19C826 /* SwapSettingsViewModelFactory.swift */; };
 		58AAA7132D27D8C6A516F999 /* MetricChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAAD2AA132E9B13726D8B /* MetricChartViewController.swift */; };
 		58AAA7217BF975D4D6F45128 /* CautionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA5BB11003A1862BDCEA6 /* CautionView.swift */; };
 		58AAA72BF33F0AF251128499 /* PingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA3CCBFC02D7F6438DE3E /* PingManager.swift */; };
@@ -2159,6 +2164,7 @@
 		58AAAD67414CEB7A9F4AE166 /* AmountDecimalParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAF740AE2BEBD7CEBD563 /* AmountDecimalParser.swift */; };
 		58AAAD67C6EC277349D1D384 /* SendFeePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA6C29584EFCDD8209363 /* SendFeePresenter.swift */; };
 		58AAAD69DADCF1CB36900641 /* CoinFavoriteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA5D4516D6CDAC50BD994 /* CoinFavoriteService.swift */; };
+		58AAAD7679983C0E9B98B1EB /* SwapSettingsViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA688756D86329C19C826 /* SwapSettingsViewModelFactory.swift */; };
 		58AAAD8E3938FECBE6891ECF /* SingleSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA00AD494F535EB833531 /* SingleSelectorView.swift */; };
 		58AAAD99081A3D570E6ECA55 /* MetricChartService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA8CB22CEF84A71CF044F /* MetricChartService.swift */; };
 		58AAAD9D7E75A0C4CA95FFB4 /* DebugInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA16C7E337511638808E5 /* DebugInteractor.swift */; };
@@ -2166,6 +2172,7 @@
 		58AAADB2D3CADDE042548B97 /* CoinCardModuleNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA5164F8D0127F73ADD5F /* CoinCardModuleNew.swift */; };
 		58AAADB514C81DA8F0016C91 /* SimpleSheetTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA54E84B5C1B68644AE46 /* SimpleSheetTitleView.swift */; };
 		58AAADC7A68B2EBEE20C8E10 /* SendConfirmationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAB2FE6078D42455148C5 /* SendConfirmationRouter.swift */; };
+		58AAADCE9FC20BFF2EEB0A58 /* SwapSettingsAdapterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAD4CED03B35E4B1812F8 /* SwapSettingsAdapterFactory.swift */; };
 		58AAADD168939A9A7614EAD6 /* SendFeePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA6C29584EFCDD8209363 /* SendFeePresenter.swift */; };
 		58AAADE670B2A60FB179B4FC /* CoinPageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA473CE62597EBC49DBB6 /* CoinPageService.swift */; };
 		58AAADEA947A83CF01321E8F /* RecipientAddressInputCellNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAFD3A0383E3BBBCD01EE /* RecipientAddressInputCellNew.swift */; };
@@ -2175,6 +2182,7 @@
 		58AAADF15D39E52E89F75FE6 /* TransactionInfoAddressMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAD28A03FD9BF14672C9D /* TransactionInfoAddressMapper.swift */; };
 		58AAAE020611495B6294ED96 /* MarketGlobalModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA7D7F06F7C044DF9CE0A /* MarketGlobalModule.swift */; };
 		58AAAE02A5B4368374B6CDCB /* SendAmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA37F862C32C60A4A44AB /* SendAmountView.swift */; };
+		58AAAE0B11E1546CC485EE87 /* SwapSettingsAdapterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAD4CED03B35E4B1812F8 /* SwapSettingsAdapterFactory.swift */; };
 		58AAAE1714A5A1FAFBF130F8 /* ItemSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAACB7FAE34A043DD3F1DC /* ItemSelectorViewController.swift */; };
 		58AAAE22650EB9D3152AEC92 /* SendFeeModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA898435C21331DE0890C /* SendFeeModule.swift */; };
 		58AAAE34277704BD76D4C751 /* CoinPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA6CBFBB0EA959466977D /* CoinPageViewModel.swift */; };
@@ -2237,6 +2245,7 @@
 		58AAAFEB4507E7459BED2F28 /* CoinPageModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA331E9A43EB0C7F186B1 /* CoinPageModule.swift */; };
 		58AAAFEE292730843426107D /* ChartDoubleLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA8F8D0BE10313B4CA1A4 /* ChartDoubleLineView.swift */; };
 		58AAAFEEC27E71FF55CBE115 /* SendConfirmationAmountCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAFA9479D63145A24BD9C /* SendConfirmationAmountCell.swift */; };
+		58AAAFF5AC08FACE577F3098 /* SwapAdapterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA5791EA3178C30AFE2A6 /* SwapAdapterFactory.swift */; };
 		58AAAFFC2DA4856D2D2E32FE /* FavoriteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAB6DF822199E20AFE0B4 /* FavoriteService.swift */; };
 		5C6515B68A9686E10E658AE9 /* libPods-Unstoppable Dev T.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A19D870F4F261A498C6F217 /* libPods-Unstoppable Dev T.a */; };
 		8BBFE08CEF9408FB9EBB41A2 /* libPods-Unstoppable Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A621352E8776A1F72915821F /* libPods-Unstoppable Tests.a */; };
@@ -3118,6 +3127,7 @@
 		58AAA54B2A8BD3C218BAD838 /* DoubleSpendInfoInteractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoubleSpendInfoInteractor.swift; sourceTree = "<group>"; };
 		58AAA54E84B5C1B68644AE46 /* SimpleSheetTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleSheetTitleView.swift; sourceTree = "<group>"; };
 		58AAA55A4A6A97C25F84034F /* CoinChartFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoinChartFactory.swift; sourceTree = "<group>"; };
+		58AAA5791EA3178C30AFE2A6 /* SwapAdapterFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwapAdapterFactory.swift; sourceTree = "<group>"; };
 		58AAA58F62A8720BE4A47B96 /* MarketAdvancedSearchModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketAdvancedSearchModule.swift; sourceTree = "<group>"; };
 		58AAA5AE34C515816D2D4977 /* DoubleSpendInfoRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoubleSpendInfoRouter.swift; sourceTree = "<group>"; };
 		58AAA5B9EF4DD882EF4020C5 /* LockScreenModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LockScreenModule.swift; sourceTree = "<group>"; };
@@ -3133,6 +3143,7 @@
 		58AAA657E30EBD52A5E06ACF /* MarketPostService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketPostService.swift; sourceTree = "<group>"; };
 		58AAA65DB8DBBE7A24180387 /* BaseThemeCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseThemeCollectionCell.swift; sourceTree = "<group>"; };
 		58AAA681BF5F2CBDCD0D8898 /* SwapApproveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwapApproveViewController.swift; sourceTree = "<group>"; };
+		58AAA688756D86329C19C826 /* SwapSettingsViewModelFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwapSettingsViewModelFactory.swift; sourceTree = "<group>"; };
 		58AAA6C29584EFCDD8209363 /* SendFeePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendFeePresenter.swift; sourceTree = "<group>"; };
 		58AAA6CBFBB0EA959466977D /* CoinPageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoinPageViewModel.swift; sourceTree = "<group>"; };
 		58AAA6D10B39575B1E5D3954 /* CautionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CautionView.swift; sourceTree = "<group>"; };
@@ -3212,6 +3223,7 @@
 		58AAACD2595FD785AEF3C379 /* CoinSelectModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoinSelectModule.swift; sourceTree = "<group>"; };
 		58AAAD257ADA95AE670CFE49 /* UniswapSettingsAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UniswapSettingsAdapter.swift; sourceTree = "<group>"; };
 		58AAAD28A03FD9BF14672C9D /* TransactionInfoAddressMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransactionInfoAddressMapper.swift; sourceTree = "<group>"; };
+		58AAAD4CED03B35E4B1812F8 /* SwapSettingsAdapterFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwapSettingsAdapterFactory.swift; sourceTree = "<group>"; };
 		58AAAD5ADB215BAA0E243F0D /* CustomFeePriorityUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomFeePriorityUnit.swift; sourceTree = "<group>"; };
 		58AAAD6F502BE56E4FECFBA0 /* SendAmountInteractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendAmountInteractor.swift; sourceTree = "<group>"; };
 		58AAAD7AC450FEF913E5417F /* InfoModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoModule.swift; sourceTree = "<group>"; };
@@ -4887,6 +4899,7 @@
 				58AAADF79C6F81FC55B07ED3 /* SwapDecimalSettingsViewModel.swift */,
 				58AAAF240F84A83FAA374AD8 /* SwapSettingsView.swift */,
 				58AAABDAACC470CA76A24FD8 /* SwapSettingsViewModel.swift */,
+				58AAA688756D86329C19C826 /* SwapSettingsViewModelFactory.swift */,
 			);
 			path = SwapSettings;
 			sourceTree = "<group>";
@@ -5126,6 +5139,8 @@
 			isa = PBXGroup;
 			children = (
 				58AAAAB6C637A5EC86ACAAAA /* SwapAdapterManager.swift */,
+				58AAA5791EA3178C30AFE2A6 /* SwapAdapterFactory.swift */,
+				58AAAD4CED03B35E4B1812F8 /* SwapSettingsAdapterFactory.swift */,
 			);
 			path = Adapters;
 			sourceTree = "<group>";
@@ -6625,6 +6640,9 @@
 				58AAA31E2207011FDBC721DB /* RecipientAddressInputCellNew.swift in Sources */,
 				58AAAC0D2700A4CA832D8B6F /* SwapAdapterManager.swift in Sources */,
 				58AAA45A418C2B3A2090F11A /* SwapCoinCardViewModelNew.swift in Sources */,
+				58AAA5CC9D3EC9B51B3A88FF /* SwapAdapterFactory.swift in Sources */,
+				58AAADCE9FC20BFF2EEB0A58 /* SwapSettingsAdapterFactory.swift in Sources */,
+				58AAAD7679983C0E9B98B1EB /* SwapSettingsViewModelFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7432,6 +7450,9 @@
 				58AAA5D4A3825BA722BBFCCE /* RecipientAddressInputCellNew.swift in Sources */,
 				58AAA95861372EC22F7045A3 /* SwapAdapterManager.swift in Sources */,
 				58AAA4152F9743F48433BE58 /* SwapCoinCardViewModelNew.swift in Sources */,
+				58AAA2E9FA71ACC621330AB6 /* SwapAdapterFactory.swift in Sources */,
+				58AAAE0B11E1546CC485EE87 /* SwapSettingsAdapterFactory.swift in Sources */,
+				58AAA397B15CCAD68D5077D4 /* SwapSettingsViewModelFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8231,6 +8252,9 @@
 				58AAADEA947A83CF01321E8F /* RecipientAddressInputCellNew.swift in Sources */,
 				58AAABD2CD5E9F69CE8F8E17 /* SwapAdapterManager.swift in Sources */,
 				58AAAAF79C6E38CBF7FB1EB8 /* SwapCoinCardViewModelNew.swift in Sources */,
+				58AAAFF5AC08FACE577F3098 /* SwapAdapterFactory.swift in Sources */,
+				58AAA683FEBD11293ABF9367 /* SwapSettingsAdapterFactory.swift in Sources */,
+				58AAA70D01856796BB296708 /* SwapSettingsViewModelFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

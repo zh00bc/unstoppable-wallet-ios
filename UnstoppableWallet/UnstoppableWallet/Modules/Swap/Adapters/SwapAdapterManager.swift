@@ -11,26 +11,17 @@ class SwapAdapterManager {
     }
 
     private let localStorage: ILocalStorage
-    private let decimalParser: IAmountDecimalParser
-
-    private(set) var currentProvider: SwapModule.DexNew.Provider
+    private let swapAdapterFactory: SwapAdapterFactory
 
     private(set) var swapAdapter: ISwapAdapter
-    private(set) var swapSettingsAdapter: ISwapSettingsAdapter
+    var swapSettingsAdapter: ISwapSettingsAdapter { swapAdapter.swapSettingsAdapter }
     private(set) var dex: SwapModule.DexNew
-
-    private let ethereumCoin: Coin
 
     private let onUpdateProviderRelay = PublishRelay<()>()
 
-    init?(localStorage: ILocalStorage, decimalParser: IAmountDecimalParser, initialFromCoin: Coin? = nil) {
-        guard let ethereumCoin = App.shared.coinKit.coin(type: .ethereum) else {
-            return nil
-        }
-        self.ethereumCoin = ethereumCoin
-
+    init?(localStorage: ILocalStorage, swapAdapterFactory: SwapAdapterFactory, initialFromCoin: Coin? = nil) {
+        self.swapAdapterFactory = swapAdapterFactory
         self.localStorage = localStorage
-        self.decimalParser = decimalParser
 
         let blockchain: SwapModule.DexNew.Blockchain
         switch initialFromCoin?.type {
@@ -40,62 +31,26 @@ class SwapAdapterManager {
         default: return nil
         }
 
-        currentProvider = Self.defaultProvider(localStorage: localStorage, blockchain: blockchain)
+        let currentProvider = Self.defaultProvider(localStorage: localStorage, blockchain: blockchain)
         dex = SwapModule.DexNew(blockchain: blockchain, provider: currentProvider)
 
-        guard let evmKit = dex.evmKit else {
+        guard let adapter = swapAdapterFactory.adapter(dex: dex, coinIn: initialFromCoin) else {
             return nil
         }
 
-        switch currentProvider {
-        case .uniswap, .pancake:
-            swapAdapter = Self.swapAdapter(evmKit: evmKit, provider: currentProvider, coinIn: initialFromCoin)
-            swapSettingsAdapter = Self.swapSettingsAdapter(coin: ethereumCoin, provider: currentProvider, decimalParser: decimalParser)
-        case .oneInch: fatalError()
-        }
-
+        swapAdapter = adapter
     }
 
-    private func updateProvider() {
-        dex = SwapModule.DexNew(blockchain: dex.blockchain, provider: currentProvider)
-        guard let evmKit = dex.evmKit else {
+    private func update(provider: SwapModule.DexNew.Provider) {
+        dex = SwapModule.DexNew(blockchain: dex.blockchain, provider: provider)
+
+        // todo: need to configure adapters
+        guard let adapter = swapAdapterFactory.adapter(dex: dex, coinIn: nil) else {
             return
         }
 
-        // todo: need to configure adapters
-        switch currentProvider {
-        case .uniswap, .pancake:
-            swapAdapter = Self.swapAdapter(evmKit: evmKit, provider: currentProvider, coinIn: nil) // todo: set right coin
-            swapSettingsAdapter = Self.swapSettingsAdapter(coin: ethereumCoin, provider: currentProvider, decimalParser: decimalParser)
-        case .oneInch: fatalError()
-        }
-
+        swapAdapter = adapter
         onUpdateProviderRelay.accept(())
-    }
-
-    //todo: move to factory
-    private static func swapAdapter(evmKit: EthereumKit.Kit, provider: SwapModule.DexNew.Provider, coinIn: Coin?) -> ISwapAdapter {
-        switch provider {
-        case .uniswap, .pancake:
-            return UniswapAdapter(
-                    uniswapKit: UniswapKit.Kit.instance(evmKit: evmKit),
-                    evmKit: evmKit,
-                    fromCoin: coinIn)
-        case .oneInch: fatalError()
-        }
-    }
-
-    //todo: move to factory
-    private static func swapSettingsAdapter(coin: Coin, provider: SwapModule.DexNew.Provider, decimalParser: IAmountDecimalParser) -> ISwapSettingsAdapter {
-        switch provider {
-        case .uniswap, .pancake:
-            return UniswapSettingsAdapter(
-                    resolutionService: AddressResolutionService(coinCode: coin.code),
-                    addressParser: AddressParserFactory().parser(coin: coin),
-                    decimalParser: decimalParser,
-                    tradeOptions: SwapTradeOptions())
-        case .oneInch: fatalError()
-        }
     }
 
 }
@@ -110,13 +65,12 @@ extension SwapAdapterManager {
         onUpdateProviderRelay.asObservable()
     }
 
-    func set(currentProvider: SwapModule.DexNew.Provider) {
-        guard currentProvider != self.currentProvider else {
+    func set(provider: SwapModule.DexNew.Provider) {
+        guard provider != dex.provider else {
             return
         }
 
-        self.currentProvider = currentProvider
-        updateProvider()
+        update(provider: provider)
     }
 
 }

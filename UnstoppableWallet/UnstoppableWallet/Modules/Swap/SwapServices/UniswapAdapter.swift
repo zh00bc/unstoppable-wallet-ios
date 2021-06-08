@@ -12,6 +12,7 @@ class UniswapAdapter {
     private var lastBlockDisposeBag = DisposeBag()
 
     private let uniswapKit: UniswapKit.Kit
+    private let settingsAdapterFactory: SwapSettingsAdapterFactory
 
     var state: SwapAdapterState = .notReady() {
         didSet {
@@ -21,7 +22,7 @@ class UniswapAdapter {
     private let stateRelay = PublishRelay<SwapAdapterState>()
 
     private let swapTradeOptionsRelay = PublishRelay<SwapTradeOptions>()
-    private var swapTradeOptions = SwapTradeOptions() {
+    var swapTradeOptions = SwapTradeOptions() {
         didSet {
             swapTradeOptionsRelay.accept(swapTradeOptions)
             syncTradeData()
@@ -67,8 +68,9 @@ class UniswapAdapter {
     private var swapData: SwapData?
     private var uniswapTradeData: TradeData?
 
-    init(uniswapKit: UniswapKit.Kit, evmKit: EthereumKit.Kit, fromCoin: Coin? = nil) {
+    init(uniswapKit: UniswapKit.Kit, settingsAdapterFactory: SwapSettingsAdapterFactory, evmKit: EthereumKit.Kit, fromCoin: Coin? = nil) {
         self.uniswapKit = uniswapKit
+        self.settingsAdapterFactory = settingsAdapterFactory
         self.fromCoin = fromCoin
 
         subscribe(lastBlockDisposeBag, evmKit.lastBlockHeightObservable) { [weak self] _ in self?.syncSwapData() }
@@ -121,18 +123,16 @@ class UniswapAdapter {
             let fromToken = try swapToken(coin: fromCoin)
             let toToken = try swapToken(coin: toCoin)
 
-            return try uniswapKit.swapDataSingle(tokenIn: fromToken, tokenOut: toToken)
+            return uniswapKit.swapDataSingle(tokenIn: fromToken, tokenOut: toToken)
         } catch {
             return Single.error(error)
         }
     }
 
     private func tradeData(swapData: SwapData, amount: Decimal, amountType: AmountType) throws -> TradeData {
-        let tradeOptions = TradeOptions()
-
         switch amountType {
-        case .exactFrom: return try uniswapKit.bestTradeExactIn(swapData: swapData, amountIn: amount, options: tradeOptions)
-        case .exactTo: return try uniswapKit.bestTradeExactOut(swapData: swapData, amountOut: amount, options: tradeOptions)
+        case .exactFrom: return try uniswapKit.bestTradeExactIn(swapData: swapData, amountIn: amount, options: swapTradeOptions.tradeOptions)
+        case .exactTo: return try uniswapKit.bestTradeExactOut(swapData: swapData, amountOut: amount, options: swapTradeOptions.tradeOptions)
         }
     }
 
@@ -149,11 +149,14 @@ class UniswapAdapter {
         }
 
         do {
+            print("trade options: \(swapTradeOptions.recipient?.title ?? "N/A") : \(swapTradeOptions.allowedSlippage.description) : \(swapTradeOptions.ttl.description)")
             let tradeData = try tradeData(swapData: swapData, amount: amount, amountType: amountType)
             try handle(tradeData: tradeData, fromCoin: fromCoin, toCoin: toCoin)
         } catch {
             state = .notReady(errors: [error])
         }
+
+        print("Trade data updated!")
     }
 
     private func handle(tradeData: TradeData, fromCoin: Coin, toCoin: Coin) throws {
@@ -228,20 +231,12 @@ class UniswapAdapter {
 
 extension UniswapAdapter: ISwapAdapter {
 
-    var routerAddress: EthereumKit.Address {
-        uniswapKit.routerAddress
+    var swapSettingsAdapter: ISwapSettingsAdapter {
+        settingsAdapterFactory.uniswapSettingsAdapter(adapter: self)
     }
 
-    var swapSettingsAdapter: ISwapSettingsAdapter {
-        guard let ethereumCoin = App.shared.coinKit.coin(type: .ethereum) else {
-            fatalError()
-        }
-        return UniswapSettingsAdapter(
-                resolutionService: AddressResolutionService(coinCode: ethereumCoin.code),
-                addressParser: AddressParserFactory().parser(coin: ethereumCoin),
-                decimalParser: AmountDecimalParser(),
-                tradeOptions: swapTradeOptions
-        )
+    var routerAddress: EthereumKit.Address {
+        uniswapKit.routerAddress
     }
 
     var stateObservable: Observable<SwapAdapterState> {

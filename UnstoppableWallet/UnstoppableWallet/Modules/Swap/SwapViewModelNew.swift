@@ -49,11 +49,11 @@ class SwapViewModelNew {
 //        subscribe(scheduler, disposeBag, swapAdapter.swapTradeOptionsObservable) { [weak self] in self?.sync(swapTradeOptions: $0) }
         subscribe(scheduler, disposeBag, pendingAllowanceService.isPendingObservable) { [weak self] in self?.sync(isApprovePending: $0) }
 
-        subscribe(scheduler, disposeBag, swapAdapterManager.onUpdateProviderObservable) { [weak self] _ in self?.subscribeSwapAdapter() }
-        subscribeSwapAdapter()
+        subscribe(scheduler, disposeBag, swapAdapterManager.onUpdateProviderObservable) { [weak self] _ in self?.updateSubscription() }
+        updateSubscription()
     }
 
-    private func subscribeSwapAdapter() {
+    private func updateSubscription() {
         swapAdapterDisposeBag = DisposeBag()
         subscribe(scheduler, swapAdapterDisposeBag, swapAdapterManager.swapAdapter.stateObservable) { [weak self] in self?.sync(adapterState: $0) }
     }
@@ -141,7 +141,7 @@ class SwapViewModelNew {
     }
 
     private func additionalTradeInfoViewItems(trade: Trade) -> [AdditionalTradeInfoViewItem] {
-        trade.additionalInfo.flatMap { info -> AdditionalTradeInfoViewItem? in
+        trade.additionalInfo.compactMap { info -> AdditionalTradeInfoViewItem? in
             switch info.value {
             case let .price(value: value, baseCoin: baseCoin, quoteCoin: quoteCoin):
                 let price = viewItemHelper.priceValue(executionPrice: value, coinIn: baseCoin, coinOut: quoteCoin)

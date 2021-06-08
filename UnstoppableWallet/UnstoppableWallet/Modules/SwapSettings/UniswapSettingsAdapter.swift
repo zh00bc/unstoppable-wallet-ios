@@ -8,9 +8,14 @@ class UniswapSettingsAdapter {
     private var limitSlippageBounds: ClosedRange<Decimal> { 0.01...20 }
     private var recommendedDeadlineBounds: ClosedRange<TimeInterval> { 600...1800 }
 
-    private let resolutionService: AddressResolutionService
-    private let addressParser: IAddressParser
     private let decimalParser: IAmountDecimalParser
+    private let swapSettingsFactory: SwapSettingsViewModelFactory
+
+    weak var delegate: UniswapAdapter?
+
+    private var slippageViewModel: SwapDecimalSettingsViewModel
+    private var deadlineViewModel: SwapDecimalSettingsViewModel
+    private var recipientAddressViewModel: SwapAddressSettingsViewModel
 
     private(set) var state: SwapSettingsState {
         didSet {
@@ -37,50 +42,32 @@ class UniswapSettingsAdapter {
         }
     }
 
-    init(resolutionService: AddressResolutionService, addressParser: IAddressParser, decimalParser: IAmountDecimalParser, tradeOptions: SwapTradeOptions) {
-        self.resolutionService = resolutionService
-        self.addressParser = addressParser
+    init(swapSettingsFactory: SwapSettingsViewModelFactory, decimalParser: IAmountDecimalParser, tradeOptions: SwapTradeOptions) {
+        self.swapSettingsFactory = swapSettingsFactory
         self.decimalParser = decimalParser
+
         slippage = tradeOptions.allowedSlippage
         deadline = tradeOptions.ttl
         recipient = tradeOptions.recipient
 
+        slippageViewModel = swapSettingsFactory.slippageViewModel(slippage: slippage)
+        deadlineViewModel = swapSettingsFactory.deadlineViewModel(deadline: deadline)
+        recipientAddressViewModel = swapSettingsFactory.recipientAddressViewModel(recipient: recipient)
+
         state = .valid
+
+        slippageViewModel.onChange = { [weak self] in self?.onSlippageChange(text: $0) }
+        slippageViewModel.isValid = { [weak self] in self?.isSlippageValid(text: $0) ?? true }
+
+        deadlineViewModel.onChange = { [weak self] in self?.onDeadlineChange(text: $0) }
+        deadlineViewModel.isValid = { [weak self] in self?.isDeadlineValid(text: $0) ?? true }
+
+        recipientAddressViewModel.onAddressChanged = { [weak self] in self?.recipient = $0 }
+
         sync()
     }
 
     // slippage
-
-    private var existSlippageViewModel: SwapDecimalSettingsViewModel?
-
-    private var slippageViewModel: SwapDecimalSettingsViewModel {
-        if let existSlippageViewModel = existSlippageViewModel {
-            return existSlippageViewModel
-        }
-
-        let initialValue: String? = slippage != TradeOptions.defaultSlippage ?
-                            slippage.description : nil
-
-        let bounds = recommendedSlippageBounds
-        let shortcuts = [
-            InputShortcut(title: "\(bounds.lowerBound.description)%", value: bounds.lowerBound.description),
-            InputShortcut(title: "\(bounds.upperBound.description)%", value: bounds.upperBound.description),
-        ]
-
-        let slippageViewModel = SwapDecimalSettingsViewModel(
-                id: "slippage",
-                placeholder: TradeOptions.defaultSlippage.description,
-                initialValue: initialValue,
-                shortcuts: shortcuts)
-
-        slippageViewModel.header = "swap.advanced_settings.slippage".localized
-        slippageViewModel.footer = "swap.advanced_settings.slippage.footer".localized
-        slippageViewModel.onChange = { [weak self] in self?.onSlippageChange(text: $0) }
-        slippageViewModel.isValid = { [weak self] in self?.isSlippageValid(text: $0) ?? true }
-
-        existSlippageViewModel = slippageViewModel
-        return slippageViewModel
-    }
 
     private func onSlippageChange(text: String?) {
         guard let value = decimalParser.parseAnyDecimal(from: text) else {
@@ -101,41 +88,6 @@ class UniswapSettingsAdapter {
 
     // deadline
 
-    private func toString(_ value: Double) -> String {
-        Decimal(floatLiteral: floor(value / 60)).description
-    }
-
-    private var existDeadlineViewModel: SwapDecimalSettingsViewModel?
-
-    private var deadlineViewModel: SwapDecimalSettingsViewModel {
-        if let existDeadlineViewModel = existDeadlineViewModel {
-            return existDeadlineViewModel
-        }
-
-        let initialValue = deadline != TradeOptions.defaultTtl ?
-                toString(deadline) : nil
-
-        let bounds = recommendedDeadlineBounds
-        let shortcuts = [
-            InputShortcut(title: "swap.advanced_settings.deadline_minute".localized(toString(bounds.lowerBound)), value: toString(bounds.lowerBound)),
-            InputShortcut(title: "swap.advanced_settings.deadline_minute".localized(toString(bounds.upperBound)), value: toString(bounds.upperBound)),
-        ]
-
-        let deadlineViewModel = SwapDecimalSettingsViewModel(
-                id: "deadline",
-                placeholder: toString(TradeOptions.defaultTtl),
-                initialValue: initialValue,
-                shortcuts: shortcuts)
-
-        deadlineViewModel.header = "swap.advanced_settings.deadline".localized
-        deadlineViewModel.footer = "swap.advanced_settings.deadline.footer".localized
-        deadlineViewModel.onChange = { [weak self] in self?.onDeadlineChange(text: $0) }
-        deadlineViewModel.isValid = { [weak self] in self?.isDeadlineValid(text: $0) ?? true }
-
-        existDeadlineViewModel = deadlineViewModel
-        return deadlineViewModel
-    }
-
     private func onDeadlineChange(text: String?) {
         guard let value = decimalParser.parseAnyDecimal(from: text) else {
             deadline = TradeOptions.defaultTtl
@@ -154,35 +106,6 @@ class UniswapSettingsAdapter {
     }
 
     // recipient address
-    private var existRecipientAddressViewModel: SwapAddressSettingsViewModel?
-
-    private var recipientAddressViewModel: SwapAddressSettingsViewModel {
-        if let existRecipientAddressViewModel = existRecipientAddressViewModel {
-            return existRecipientAddressViewModel
-        }
-
-        let initialValue = recipient
-        let bounds = recommendedDeadlineBounds
-        let shortcuts = [
-            InputShortcut(title: "swap.advanced_settings.deadline_minute".localized(toString(bounds.lowerBound)), value: toString(bounds.lowerBound)),
-            InputShortcut(title: "swap.advanced_settings.deadline_minute".localized(toString(bounds.upperBound)), value: toString(bounds.upperBound)),
-        ]
-
-        let recipientViewModel = SwapAddressSettingsViewModel(
-                resolutionService: resolutionService,
-                addressParser: addressParser,
-                id: "recipient",
-                placeholder: nil,
-                initialAddress: recipient)
-
-        recipientViewModel.header = "swap.advanced_settings.recipient_address".localized
-        recipientViewModel.footer = "swap.advanced_settings.recipient.footer".localized
-        recipientViewModel.onAddressChanged = { [weak self] in self?.recipient = $0 }
-
-        existRecipientAddressViewModel = recipientViewModel
-        return recipientViewModel
-    }
-
 
     private func sync() {
         var errors = [Error]()
@@ -265,6 +188,10 @@ extension UniswapSettingsAdapter: ISwapSettingsAdapter {
         stateRelay.asObservable()
     }
 
+    func applySettings() {
+        delegate?.swapTradeOptions = SwapTradeOptions(allowedSlippage: slippage, ttl: deadline, recipient: recipient)
+    }
+
 }
 
 extension UniswapSettingsAdapter {
@@ -282,7 +209,6 @@ extension UniswapSettingsAdapter {
     enum DeadlineError: Error {
         case zeroValue
     }
-
 
 }
 

@@ -6,7 +6,6 @@ import CoinKit
 
 protocol ISwapAdapter: AnyObject {
     var swapSettingsAdapter: ISwapSettingsAdapter { get }
-
     var routerAddress: EthereumKit.Address { get }
 
     var state: SwapAdapterState { get }
@@ -80,11 +79,10 @@ protocol ISwapSettingsAdapter {
     var settingsItems: [ISwapSettingsViewModel] { get }
     var settingsItemsObservable: Observable<[ISwapSettingsViewModel]> { get }
 
-//    var errors: [Error] { get }
-//    var errorsObservable: Observable<[Error]> { get }
-
     var state: SwapSettingsState { get }
     var stateObservable: Observable<SwapSettingsState> { get }
+
+    func applySettings()
 }
 
 enum SwapSettingsState {

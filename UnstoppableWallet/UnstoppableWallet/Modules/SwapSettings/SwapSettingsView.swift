@@ -86,7 +86,7 @@ class SwapSettingsView: ThemeViewController {
 
     private func syncSettingsItems() {
         let disposeBag = DisposeBag()
-        settingsSections = viewModel.settingsItems.flatMap { section(for: $0, disposeBag: disposeBag)  }
+        settingsSections = viewModel.settingsItems.compactMap { section(for: $0, disposeBag: disposeBag)  }
 
         settingsDisposeBag = disposeBag
     }

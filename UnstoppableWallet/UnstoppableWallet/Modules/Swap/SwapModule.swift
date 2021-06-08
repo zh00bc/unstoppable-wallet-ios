@@ -56,20 +56,20 @@ struct SwapModule {
         let value: String
     }
 
-//    static func viewController(coinIn: Coin) -> UIViewController? {
-//        switch coinIn.type {
-//        case .ethereum, .erc20: return viewController(coinIn: coinIn)
-//        case .binanceSmartChain, .bep20: return viewController(dex: .pancake, coinIn: coinIn)
-//        default: return nil
-//        }
-//    }
-
     static func viewController(coinIn: Coin? = nil) -> UIViewController? {
+        guard let ethereumCoin = App.shared.coinKit.coin(type: .ethereum) else {
+            return nil
+        }
+
+        let swapSettingsViewModelFactory = SwapSettingsViewModelFactory(
+                resolutionService: AddressResolutionService(coinCode: ethereumCoin.code),
+                addressParser: AddressParserFactory().parser(coin: ethereumCoin))
+
+        let swapSettingsAdapterFactory = SwapSettingsAdapterFactory(decimalParser: AmountDecimalParser(), factory: swapSettingsViewModelFactory)
+        let swapAdapterFactory = SwapAdapterFactory(swapSettingsAdapterFactory: swapSettingsAdapterFactory)
         guard let swapAdapterManager = SwapAdapterManager(
                 localStorage: App.shared.localStorage,
-//                resolutionService: AddressResolutionService(coinCode: ethereumCoin.code),
-//                addressParser: AddressParserFactory().parser(coin: ethereumCoin),
-                decimalParser: AmountDecimalParser(),
+                swapAdapterFactory: swapAdapterFactory,
                 initialFromCoin: coinIn
         ) else {
             return nil      // for all not eip20 tokens

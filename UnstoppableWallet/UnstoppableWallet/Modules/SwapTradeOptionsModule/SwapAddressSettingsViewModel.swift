@@ -8,7 +8,7 @@ class SwapAddressSettingsViewModel {
 
     let id: String
     let placeholder: String?
-    let initialAddress: Address?
+    var initialAddress: Address?
 
     var header: String?
     var footer: String?

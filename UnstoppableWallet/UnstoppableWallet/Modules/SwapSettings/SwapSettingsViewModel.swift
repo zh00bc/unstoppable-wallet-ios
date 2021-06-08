@@ -4,7 +4,6 @@ import RxCocoa
 class SwapSettingsViewModel {
     private let disposeBag = DisposeBag()
 
-//    private let service: SwapTradeOptionsService
     private let swapSettingsAdapter: ISwapSettingsAdapter
 
     private let actionRelay = BehaviorRelay<ActionState>(value: .enabled)
@@ -46,12 +45,11 @@ extension SwapSettingsViewModel {
     }
 
     public func doneDidTap() -> Bool {
-//        if case let .valid = service.state {
-//            tradeService.swapTradeOptions = tradeOptions
-//            return true
-//        }
-//        return false
-    return false
+        if case .valid = swapSettingsAdapter.state {
+            swapSettingsAdapter.applySettings()
+            return true
+        }
+        return false
     }
 
 }

@@ -51,12 +51,12 @@ class SwapServiceNew {
         self.pendingAllowanceService = pendingAllowanceService
         self.adapterManager = adapterManager
 
-        subscribeToSwapAdapter()
+        updateSubscription()
         subscribe(disposeBag, allowanceService.stateObservable) { [weak self] _ in self?.syncState() }
         subscribe(disposeBag, pendingAllowanceService.isPendingObservable) { [weak self] _ in self?.syncState() }
     }
 
-    private func subscribeToSwapAdapter() {
+    private func updateSubscription() {
         swapAdapterDisposeBag = DisposeBag()
 
         subscribe(swapAdapterDisposeBag, swapAdapterManager.swapAdapter.stateObservable) { [weak self] _ in self?.syncState() }
